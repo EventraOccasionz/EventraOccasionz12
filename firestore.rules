@@ -1,0 +1,180 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 1. Catch-all default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function getUserData() {
+      return get(/databases/$(database)/documents/registered_accounts/$(request.auth.uid)).data;
+    }
+
+    function isSystemAdmin() {
+      return isSignedIn() && (
+        exists(/databases/$(database)/documents/admin_users/$(request.auth.uid)) ||
+        (exists(/databases/$(database)/documents/registered_accounts/$(request.auth.uid)) &&
+         getUserData().role == 'admin')
+      );
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        exists(/databases/$(database)/documents/admin_users/$(request.auth.uid)) ||
+        (exists(/databases/$(database)/documents/registered_accounts/$(request.auth.uid)) &&
+         getUserData().role == 'admin')
+      );
+    }
+
+    // families
+    match /families/{familyId} {
+      allow read: if true;
+      allow create: if true;
+      allow update, delete: if isAdmin();
+    }
+
+    // rsvp
+    match /rsvp/{rsvpId} {
+      allow read: if true;
+      allow create: if true;
+      allow update, delete: if isAdmin();
+    }
+
+    // transport_requests
+    match /transport_requests/{transportId} {
+      allow read: if true;
+      allow create: if true;
+      allow update, delete: if isAdmin();
+    }
+
+    // room_bookings
+    match /room_bookings/{bookingId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // admin_users
+    match /admin_users/{userId} {
+      allow read: if isSignedIn() && request.auth.uid == userId;
+      allow write: if false; // Only manageable directly via Firebase Console
+    }
+
+    // registered_accounts
+    match /registered_accounts/{accountId} {
+      allow get: if isSignedIn() && (request.auth.uid == accountId || (request.auth.uid != accountId && isSystemAdmin()));
+      allow list: if isSystemAdmin();
+      allow create: if true;
+      allow update: if isSignedIn() && (request.auth.uid == accountId || (request.auth.uid != accountId && isSystemAdmin()));
+      allow delete: if isSystemAdmin();
+    }
+
+    // inquiries
+    match /inquiries/{inquiryId} {
+      allow read: if isAdmin();
+      allow create: if true;
+      allow update, delete: if isAdmin();
+    }
+
+    // services
+    match /services/{serviceId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // gallery_items
+    match /gallery_items/{itemId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // fcm_tokens
+    match /fcm_tokens/{tokenId} {
+      allow read: if true;
+      allow create, update: if true;
+      allow delete: if isAdmin();
+    }
+
+    // venue_settings
+    match /venue_settings/{settingId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // about_settings
+    match /about_settings/{settingId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // categories
+    match /categories/{categoryId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // sub_categories
+    match /sub_categories/{subCategoryId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Estimator Collections
+    match /estimator_cities/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /estimator_hotels/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /estimator_venues/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /estimator_packages/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // event_details
+    match /event_details/{eventId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // event_configs
+    match /event_configs/{eventId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // guest_documents
+    match /guest_documents/{docId} {
+      allow read: if true;
+      allow create: if true;
+      allow update, delete: if isAdmin();
+    }
+
+    // audit_logs
+    match /audit_logs/{logId} {
+      allow read: if isAdmin();
+      allow create: if true;
+      allow update, delete: if false;
+    }
+
+    // admin_otps
+    match /admin_otps/{userId} {
+      allow read, write: if isSignedIn() && request.auth.uid == userId;
+    }
+
+    // admin_2fa
+    match /admin_2fa/{userId} {
+      allow read, write: if isSignedIn() && request.auth.uid == userId;
+    }
+  }
+}
