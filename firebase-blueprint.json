@@ -1,0 +1,547 @@
+{
+  "entities": {
+    "Family": {
+      "title": "Family Profile",
+      "description": "Guest groups authorized via an access code slug",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "access_code": { "type": "string" },
+        "slug": { "type": "string" },
+        "max_guests": { "type": "integer" },
+        "created_at": { "type": "string" },
+        "guest_image": { "type": "string" },
+        "custom_greeting": { "type": "string" },
+        "custom_title": { "type": "string" },
+        "documents": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "name": { "type": "string" },
+              "type": { "type": "string" },
+              "size": { "type": "integer" },
+              "url": { "type": "string" },
+              "uploaded_at": { "type": "string" }
+            }
+          }
+        }
+      },
+      "required": ["name", "access_code", "slug", "max_guests"]
+    },
+    "RSVP": {
+      "title": "RSVP Details",
+      "description": "Form inputs responding to invitation status",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "family_id": { "type": "string" },
+        "guest_name": { "type": "string" },
+        "email": { "type": "string" },
+        "attending": { "type": "boolean" },
+        "total_guests": { "type": "integer" },
+        "children_count": { "type": "integer" },
+        "custom_notes": { "type": "string" },
+        "events": { "type": "array" },
+        "created_at": { "type": "string" }
+      },
+      "required": ["family_id", "guest_name", "email", "attending", "total_guests", "events"]
+    },
+    "TransportRequest": {
+      "title": "Transport Request",
+      "description": "Travel logistics requests from families",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "family_id": { "type": "string" },
+        "mode": { "type": "string", "enum": ["Car", "Bus", "Train", "Flight"] },
+        "need_cab": { "type": "boolean" },
+        "pickup_location": { "type": "string" },
+        "arrival_time": { "type": "string" },
+        "details": { "type": "string" },
+        "created_at": { "type": "string" }
+      },
+      "required": ["family_id", "mode", "need_cab"]
+    },
+    "RoomBooking": {
+      "title": "Room Booking",
+      "description": "Assigned luxury rooms or suite allotments",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "family_id": { "type": "string" },
+        "hotel_name": { "type": "string" },
+        "room_number": { "type": "string" },
+        "check_in": { "type": "string" },
+        "check_out": { "type": "string" },
+        "status": { "type": "string", "enum": ["Pending", "Confirmed", "Checked-in", "Checked-out"] },
+        "created_at": { "type": "string" }
+      },
+      "required": ["family_id", "status"]
+    },
+    "RegisteredAccount": {
+      "title": "Registered Account",
+      "description": "Users and managers registered and logged in",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "role": { "type": "string", "enum": ["user", "admin"] },
+        "passcode": { "type": "string" },
+        "slug": { "type": "string" },
+        "created_at": { "type": "string" }
+      },
+      "required": ["name", "email", "role"]
+    },
+    "Inquiry": {
+      "title": "Business Inquiry",
+      "description": "B2C client lead bookings collected via contact form",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "service_selected": { "type": "string" },
+        "message": { "type": "string" },
+        "status": { "type": "string", "enum": ["Pending", "Contacted", "Completed"] },
+        "created_at": { "type": "string" }
+      },
+      "required": ["name", "email", "phone", "service_selected", "message", "status"]
+    },
+    "Service": {
+      "title": "Service Offering",
+      "description": "CMS-backed service details",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "cat": { "type": "string" },
+        "ico": { "type": "string" },
+        "name": { "type": "string" },
+        "desc": { "type": "string" },
+        "feats": { "type": "array" },
+        "price": { "type": "string" },
+        "order_index": { "type": "integer" },
+        "visible": { "type": "boolean" },
+        "created_at": { "type": "string" }
+      },
+      "required": ["cat", "ico", "name", "desc", "feats", "order_index", "visible"]
+    },
+    "GalleryItem": {
+      "title": "Gallery Item",
+      "description": "Portfolio visuals with fallbacks and upload support",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "cat": { "type": "string" },
+        "lbl": { "type": "string" },
+        "bg": { "type": "string" },
+        "image_url": { "type": "string" },
+        "order_index": { "type": "integer" },
+        "visible": { "type": "boolean" },
+        "created_at": { "type": "string" }
+      },
+      "required": ["cat", "lbl", "order_index", "visible"]
+    },
+    "AuditLog": {
+      "title": "Administrative Audit Log",
+      "description": "Logs tracking backend adjustments of system resources",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "timestamp": { "type": "string" },
+        "action": { "type": "string" },
+        "performer": { "type": "string" },
+        "category": { "type": "string" },
+        "details": { "type": "string" }
+      },
+      "required": ["timestamp", "action", "performer", "category", "details"]
+    },
+    "VenueSetting": {
+      "title": "Venue Map Setting",
+      "description": "Geographical and interactive map configuration for the event venue",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "venue_name": { "type": "string" },
+        "address": { "type": "string" },
+        "lat": { "type": "number" },
+        "lng": { "type": "number" },
+        "google_maps_url": { "type": "string" },
+        "interactive_map_url": { "type": "string" },
+        "zoom": { "type": "integer" },
+        "updated_at": { "type": "string" }
+      },
+      "required": ["venue_name", "address"]
+    },
+    "EventDetails": {
+      "title": "Event Details",
+      "description": "Granular parameters including budgets, tasks, vendors, and timelines per event workspace",
+      "type": "object",
+      "properties": {
+        "tasks": { "type": "array" },
+        "vendors": { "type": "array" },
+        "budget": { "type": "object" },
+        "timeline": { "type": "array" },
+        "staff": { "type": "array" }
+      }
+    },
+    "FCMToken": {
+      "title": "FCM Token Registration",
+      "description": "Registered devices for FCM web push notifications",
+      "type": "object",
+      "properties": {
+        "token": { "type": "string" },
+        "familyId": { "type": "string" },
+        "accountId": { "type": "string" },
+        "name": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["token"]
+    },
+    "Category": {
+      "title": "Master Category",
+      "description": "Website top-level service categories",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "slug": { "type": "string" },
+        "short_desc": { "type": "string" },
+        "display_order": { "type": "integer" }
+      },
+      "required": ["name", "slug"]
+    },
+    "SubCategory": {
+      "title": "Sub Category",
+      "description": "Website service sub-categories nested inside top-level categories",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "category_id": { "type": "string" },
+        "name": { "type": "string" },
+        "slug": { "type": "string" },
+        "short_desc": { "type": "string" },
+        "display_order": { "type": "integer" }
+      },
+      "required": ["category_id", "name", "slug"]
+    },
+    "AboutSetting": {
+      "title": "About Setting",
+      "description": "Premium story details, founder info, features and key statistics for Eventra",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "founder_name": { "type": "string" },
+        "founder_image": { "type": "string" },
+        "team_image": { "type": "string" },
+        "heading": { "type": "string" },
+        "description": { "type": "string" },
+        "stats": {
+          "type": "object",
+          "properties": {
+            "years_experience": { "type": "string" },
+            "events_managed": { "type": "string" },
+            "trusted_vendors": { "type": "string" },
+            "happy_clients": { "type": "string" }
+          }
+        },
+        "features": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "updated_at": { "type": "string" }
+      },
+      "required": ["founder_name", "heading", "description"]
+    },
+    "EventConfig": {
+      "title": "Event Configuration",
+      "description": "Settings for the digital invitation, functions timeline, countdown, and RSVP behavior",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "invitation": {
+          "type": "object",
+          "properties": {
+            "welcomeHeading": { "type": "string" },
+            "partner1Name": { "type": "string" },
+            "partner2Name": { "type": "string" },
+            "invitationMessage": { "type": "string" },
+            "backgroundMusic": { "type": "string" },
+            "mainPhoto": { "type": "string" }
+          }
+        },
+        "functions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "name": { "type": "string" },
+              "date": { "type": "string" },
+              "startTime": { "type": "string" },
+              "venueName": { "type": "string" },
+              "description": { "type": "string" },
+              "dressCode": { "type": "string" },
+              "mapsLink": { "type": "string" },
+              "visible": { "type": "boolean" },
+              "thumbnail": { "type": "string" }
+            }
+          }
+        },
+        "countdown": {
+          "type": "object",
+          "properties": {
+            "show": { "type": "boolean" },
+            "heading": { "type": "string" },
+            "date": { "type": "string" }
+          }
+        },
+        "rsvp": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "deadline": { "type": "string" },
+            "questions": {
+              "type": "object",
+              "properties": {
+                "attendance": { "type": "boolean" },
+                "guests": { "type": "boolean" },
+                "food": { "type": "boolean" },
+                "travel": { "type": "boolean" },
+                "notes": { "type": "boolean" }
+              }
+            }
+          }
+        },
+        "updated_at": { "type": "string" }
+      }
+    },
+    "GuestDocument": {
+      "title": "Guest Document",
+      "description": "Verification documents uploaded by guests",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "type": { "type": "string" },
+        "size": { "type": "integer" },
+        "url": { "type": "string" },
+        "uploaded_at": { "type": "string" },
+        "verification_status": { "type": "string", "enum": ["Pending", "Verified", "Rejected"] },
+        "family_id": { "type": "string" },
+        "guest_id": { "type": "string" },
+        "family_name": { "type": "string" },
+        "event_id": { "type": "string" },
+        "notes": { "type": "string" }
+      },
+      "required": ["id", "name", "type", "size", "url", "uploaded_at", "verification_status", "family_id", "event_id"]
+    },
+    "CMSPage": {
+      "title": "CMS Page Metadata",
+      "description": "Page routing and publishing state",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "slug": { "type": "string" },
+        "title": { "type": "string" },
+        "status": { "type": "string", "enum": ["draft", "review", "approved", "published", "archived"] },
+        "seo_id": { "type": "string" },
+        "layout_id": { "type": "string" },
+        "created_at": { "type": "string" },
+        "updated_at": { "type": "string" },
+        "published_at": { "type": "string" },
+        "author_id": { "type": "string" }
+      },
+      "required": ["slug", "title", "status"]
+    },
+    "CMSPageSection": {
+      "title": "CMS Page Section",
+      "description": "Layout and structural position of sections on a page",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "page_id": { "type": "string" },
+        "type": { "type": "string", "enum": ["hero", "about", "services", "gallery", "testimonials", "faq", "timeline", "contact", "footer", "custom"] },
+        "component_key": { "type": "string" },
+        "order_index": { "type": "number" },
+        "is_visible": { "type": "boolean" },
+        "layout_config": { "type": "object" }
+      },
+      "required": ["page_id", "type", "component_key", "order_index", "is_visible"]
+    },
+    "CMSSectionContent": {
+      "title": "CMS Section Content",
+      "description": "The pure content parameters for a specific section",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "section_id": { "type": "string" },
+        "content": { "type": "object" },
+        "last_updated": { "type": "string" },
+        "updated_by": { "type": "string" }
+      },
+      "required": ["section_id", "content"]
+    },
+    "CMSPageVersion": {
+      "title": "CMS Page Version",
+      "description": "Version snapshot of page structure and content",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "page_id": { "type": "string" },
+        "version_number": { "type": "integer" },
+        "snapshot": { "type": "object" },
+        "created_at": { "type": "string" },
+        "created_by": { "type": "string" },
+        "change_reason": { "type": "string" }
+      },
+      "required": ["page_id", "version_number", "snapshot", "created_at", "created_by"]
+    },
+    "CMSThemeTokens": {
+      "title": "CMS Theme Tokens",
+      "description": "Visual styling design tokens",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "colors": { "type": "object" },
+        "typography": { "type": "object" },
+        "spacing": { "type": "object" },
+        "effects": { "type": "object" },
+        "is_dark_mode": { "type": "boolean" }
+      },
+      "required": ["name", "colors", "typography", "spacing", "effects", "is_dark_mode"]
+    },
+    "CMSGlobalVariables": {
+      "title": "CMS Global Variables",
+      "description": "Static content parameters and constants for global reuse",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "company_name": { "type": "string" },
+        "contact": { "type": "object" },
+        "social_links": { "type": "object" },
+        "branding": { "type": "object" }
+      },
+      "required": ["company_name", "contact", "branding"]
+    },
+    "CMSAnalytics": {
+      "title": "CMS Analytics Log",
+      "description": "Decoupled metric log tracking page and section events",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "page_id": { "type": "string" },
+        "section_id": { "type": "string" },
+        "metric_type": { "type": "string", "enum": ["view", "click", "conversion"] },
+        "element_id": { "type": "string" },
+        "user_agent": { "type": "string" },
+        "referrer": { "type": "string" },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["page_id", "metric_type", "timestamp"]
+    }
+  },
+  "firestore": {
+    "categories": {
+      "schema": "Category",
+      "description": "Master categories for dynamic website content"
+    },
+    "sub_categories": {
+      "schema": "SubCategory",
+      "description": "Subcategories for dynamic website content"
+    },
+    "fcm_tokens": {
+      "schema": "FCMToken",
+      "description": "Store registered FCM push delivery tokens"
+    },
+    "families": {
+      "schema": "Family",
+      "description": "Family groups authorised for private dashboards"
+    },
+    "rsvp": {
+      "schema": "RSVP",
+      "description": "Submitted RSVPs per specific guest family identity"
+    },
+    "transport_requests": {
+      "schema": "TransportRequest",
+      "description": "Transport arrangements logged by wedding/party events"
+    },
+    "room_bookings": {
+      "schema": "RoomBooking",
+      "description": "Hotel assignment details allocated by Event managers"
+    },
+    "registered_accounts": {
+      "schema": "RegisteredAccount",
+      "description": "Security profile registry tracking explicit Auth identities"
+    },
+    "inquiries": {
+      "schema": "Inquiry",
+      "description": "Leads submitted via contact pages"
+    },
+    "services": {
+      "schema": "Service",
+      "description": "Offerings in the dynamic event catalog with editable CMS details"
+    },
+    "gallery_items": {
+      "schema": "GalleryItem",
+      "description": "Luxe images of portfolio categories"
+    },
+    "audit_logs": {
+      "schema": "AuditLog",
+      "description": "Internal logs documenting administrative events"
+    },
+    "venue_settings": {
+      "schema": "VenueSetting",
+      "description": "Customized venue location coordinates and map image source definitions"
+    },
+    "about_settings": {
+      "schema": "AboutSetting",
+      "description": "About settings details containing founder name, story description, statistics, features, and images."
+    },
+    "event_details": {
+      "schema": "EventDetails",
+      "description": "Granular parameters including budgets, tasks, vendors, and timelines per event workspace"
+    },
+    "event_configs": {
+      "schema": "EventConfig",
+      "description": "Custom configuration for the digital invitation, functions, and RSVP settings"
+    },
+    "guest_documents": {
+      "schema": "GuestDocument",
+      "description": "Verification documents uploaded by guests"
+    },
+    "pages": {
+      "schema": "CMSPage",
+      "description": "CMS page records with routing and metadata"
+    },
+    "page_sections": {
+      "schema": "CMSPageSection",
+      "description": "Structural definitions and component pairings per section"
+    },
+    "section_content": {
+      "schema": "CMSSectionContent",
+      "description": "Independent visual payloads for specific sections"
+    },
+    "page_versions": {
+      "schema": "CMSPageVersion",
+      "description": "Revertible snapshot snapshots of structural history"
+    },
+    "theme_tokens": {
+      "schema": "CMSThemeTokens",
+      "description": "Palette and spacing configuration tokens"
+    },
+    "global_variables": {
+      "schema": "CMSGlobalVariables",
+      "description": "Static properties variables rendered in headers/footers/etc."
+    },
+    "cms_analytics": {
+      "schema": "CMSAnalytics",
+      "description": "Decoupled metric log tracking page and section events"
+    }
+  }
+}
